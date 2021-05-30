@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html style="width: 90%">
+  <head>
+    <meta charset="utf-8" />
+    <title>Interactive Grading</title>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.2.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-api-2.3.2.min.js" crossorigin="anonymous" ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/amit112amit/browser-grading@1.1.0/gradinglogic.min.js" ></script>
+  </head>
+
+  <body style="width: 90%">
+    <h3>Interactive Grading</h3>
+    <ol>
+      <li>
+        Enter a comma-separated, tab-separated, space-separated or
+        newline-separated list of marks. For example, copy a column or a row
+        from an Excel sheet and paste it in the text area.
+      </li>
+      <li>For fine-grained control on the sliders, click a slider and then use keyboard arrow keys.</li>
+      <li>
+        To download the plot, click on the save button on the right of the plot.
+      </li>
+    </ol>
+    <div class="container" style="display: flex">
+      <div class="fixed" style="width: 500px">
+        <form>
+          <fieldset style="width: 450px">
+            <legend>Course Details</legend>
+            <p>
+              <label for="courseTitleInput">Course Title:</label>
+              <input
+                type="text"
+                id="courseTitleInput"
+                value="BITS F123 XYZ"
+                style="width: 300px"
+              />
+            </p>
+            <p>
+              <label for="courseTotalInput">Course Total:</label>
+              <input
+                type="number"
+                id="courseTotalInput"
+                min="0"
+                max="500"
+                step="1"
+                size="3"
+                value="100"
+              />
+            </p>
+          </fieldset>
+        </form>
+      </div>
+      <div class="fixed" style="width: 500px">
+        <form>
+          <fieldset style="width: 450px">
+            <legend>Enter Marks</legend>
+            <textarea
+              id="copyPasteData"
+              rows="6"
+              style="width: 400px; resize: none"
+            ></textarea>
+          </fieldset>
+        </form>
+      </div>
+      <div class="fixed" style="width: 100px">
+        <input
+          type="button"
+          id="plotHist"
+          value="Plot Histogram"
+          onclick="PlotHistogram()"
+        />
+      </div>
+    </div>
+    <div id="output" style="color: red"></div>
+    <!-- Create a tabular layout for the grade labels, checkboxes, and sliders -->
+    <form autocomplete="off">
+      <fieldset style="width: 1150px">
+        <legend style="margin-left: 450px">Adjust grade-cutoffs</legend>
+        <div class="divTable" style="display: table; width: auto">
+          <div
+            class="divRow"
+            style="display: table-row; width: auto; clear: both"
+          >
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For A grade -->
+              <label for="aCheck"><b>A:</b></label>
+              <input
+                type="checkbox"
+                id="aCheck"
+                name="aCheck"
+                checked="true"
+                onchange="enableDisableGrade('A')"
+              />
+              <input
+                type="range"
+                id="aSlider"
+                name="aSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="80"
+                onchange="updateGradeCutoff('A')"
+              />
+              <label id="aSliderVal">80</label>
+            </div>
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For B grade -->
+              <label for="bCheck"><b>B:</b></label>
+              <input
+                type="checkbox"
+                id="bCheck"
+                name="bCheck"
+                checked="true"
+                onchange="enableDisableGrade('B')"
+              />
+              <input
+                type="range"
+                id="bSlider"
+                name="bSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="60"
+                onchange="updateGradeCutoff('B')"
+              />
+              <label id="bSliderVal">60</label>
+            </div>
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For C grade -->
+              <label for="cCheck"><b>C:</b></label>
+              <input
+                type="checkbox"
+                id="cCheck"
+                name="cCheck"
+                checked="true"
+                onchange="enableDisableGrade('C')"
+              />
+              <input
+                type="range"
+                id="cSlider"
+                name="cSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="40"
+                onchange="updateGradeCutoff('C')"
+              />
+              <label id="cSliderVal">40</label>
+            </div>
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For D grade -->
+              <label for="dCheck"><b>D:</b></label>
+              <input
+                type="checkbox"
+                id="dCheck"
+                name="dCheck"
+                checked="true"
+                onchange="enableDisableGrade('D')"
+              />
+              <input
+                type="range"
+                id="dSlider"
+                name="dSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="20"
+                onchange="updateGradeCutoff('D')"
+              />
+              <label id="dSliderVal">20</label>
+            </div>
+          </div>
+          <div
+            class="divRow"
+            style="display: table-row; width: auto; clear: both"
+          >
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For A- grade -->
+              <label for="amCheck"><b>A-:</b></label>
+              <input
+                type="checkbox"
+                id="amCheck"
+                name="amCheck"
+                onchange="enableDisableGrade('A-')"
+              />
+              <input
+                type="range"
+                id="amSlider"
+                name="amSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="70"
+                onchange="updateGradeCutoff('A-')"
+              />
+              <label id="amSliderVal">70</label>
+            </div>
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For B- grade -->
+              <label for="bmCheck"><b>B-:</b></label>
+              <input
+                type="checkbox"
+                id="bmCheck"
+                name="bmCheck"
+                onchange="enableDisableGrade('B-')"
+              />
+              <input
+                type="range"
+                id="bmSlider"
+                name="bmSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="50"
+                onchange="updateGradeCutoff('B-')"
+              />
+              <label id="bmSliderVal">50</label>
+            </div>
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For C- grade -->
+              <label for="cmCheck"><b>C-:</b></label>
+              <input
+                type="checkbox"
+                id="cmCheck"
+                name="cmCheck"
+                onchange="enableDisableGrade('C-')"
+              />
+              <input
+                type="range"
+                id="cmSlider"
+                name="cmSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="30"
+                onchange="updateGradeCutoff('C-')"
+              />
+              <label id="cmSliderVal">30</label>
+            </div>
+            <div class="divCell" style="display: table-cell; width: 280px">
+              <!-- For E grade -->
+              <label for="eCheck"><b>E:</b></label>
+              <input
+                type="checkbox"
+                id="eCheck"
+                name="eCheck"
+                onchange="enableDisableGrade('E')"
+              />
+              <input
+                type="range"
+                id="eSlider"
+                name="eSlider"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="10"
+                onchange="updateGradeCutoff('E')"
+              />
+              <label id="eSliderVal">10</label>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </body>
+</html>
