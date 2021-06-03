@@ -1,46 +1,183 @@
 <!DOCTYPE html>
-<html style="width: 90%">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Interactive Grading</title>
     <script
       type="text/javascript"
       src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.2.min.js"
       crossorigin="anonymous"
     ></script>
-    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-api-2.3.2.min.js" crossorigin="anonymous" ></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/amit112amit/browser-grading@1.1.0/gradinglogic.min.js" ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.bokeh.org/bokeh/release/bokeh-api-2.3.2.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" defer="defer" src="https://cdn.jsdelivr.net/gh/amit112amit/browser-grading@2.0.0/gradinglogic.min.js" ></script>
+    <style>
+        .guiArea{
+            width: 98%;
+            margin: auto;
+        }
+      .inputDiv {
+        margin-top: 1.5%;
+        width: 15%;
+        float: left;
+        height: 50%;
+      }
+      label{
+        width: 100%;
+        float: left;
+      }
+      textarea {
+        resize: none;
+        width: 100%;
+        border: 1px solid gray;
+        border-radius: 5px;
+        float: left;
+        margin-bottom: 2px;
+        margin-top: 6px;
+      }
+      #plotHistButton, #savePDFButton {
+        width: 100%;
+        border: 1px solid gray;
+        border-radius: 5px;
+        margin-top: 5px;
+      }
+      .bokehPlot {
+        height: 50%;
+        width: 80%;
+        float: left;
+        margin-top: 1%;
+        margin-left: 1%;
+        min-height: 400px;
+      }
+      .gradeControls {
+        margin-top: 2%;
+        margin-left: 20%;
+      }
+      label.gradeLbl{
+          text-align: right;
+          width: 50px;
+          font-size: 14pt;
+      }
+      input[type="checkbox"]{
+          width: 20px;
+      }
+      input[type="number"] {
+        width: 50px;
+      }
+      input[type="range"]{
+        width: 45%;
+      }
+      #courseTitleInput, #courseTotalInput{
+          width:100%;
+          float: left;
+      }
+      .divTable{
+        display: table;
+      }
+      .divRow{
+        display: table-row;
+      }
+      .divCell{
+        display: table-cell;
+      }
+      .usageDiv{
+        float: left;
+        width: 100%;
+      }
+      .banner{
+        width: 50%;
+        margin: auto;
+      }
+      h1.heading{
+        font-size: 32pt;
+        color:#211d70;
+        margin-top: 5px;
+        padding: 15px;
+      }
+      img.logo{
+        float: left;
+        height: 100%;
+        width: auto;
+      }
+      #output{
+        color: red;
+        width: 600px;
+        margin: auto;
+        font-size: 12pt;
+      }
+      #colorBanner{
+        width: 100%;
+      }
+      img.colorTop{
+        float:right;
+      }
+      img.colorBottom{
+        float:left;
+      }
+      img.motto{
+        float: right;
+      }
+      #footColors{
+        width: 50%;
+        margin: auto;
+      }
+      .colorBottom, .motto{
+        margin-top: 5vh;
+      }
+      @media screen and (max-width: 800px){
+        .inputDiv, .gradeControls, img{
+          width: 100%;
+          clear: both;
+          margin: 0%;
+        }
+      }
+    </style>
   </head>
-
-  <body style="width: 90%">
-    <h3>Interactive Grading</h3>
+  <body>
+    <header class="banner">
+      <img class="logo" alt="BITS Logo" src="data:image/png;base64,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" />
+      <h1 class="heading"><font>Interactive Grading</font></h1>
+      <img class="colorTop" alt="BITS colors" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAi8AAAAGBAMAAAD5xmOgAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9btUUrDnYQcchQnSyIFnHUKhShQqgVWnUwufQLmjQkKS6OgmvBwY/FqoOLs64OroIg+AHi5uak6CIl/i8ptIjx4Lgf7+497t4B/kaFqWbXBKBqlpFOJoRsblUIvqIHAYQQR5/ETH1OFFPwHF/38PH1LsazvM/9OfqVvMkAn0A8y3TDIt4gnt60dM77xBFWkhTic+Jxgy5I/Mh12eU3zkWH/TwzYmTS88QRYqHYwXIHs5KhEseJo4qqUb4/67LCeYuzWqmx1j35C8N5bWWZ6zRHkMQiliBCgIwayqjAQoxWjRQTadpPePiHHb9ILplcZTByLKAKFZLjB/+D392ahalJNymcALpfbPtjFAjuAs26bX8f23bzBAg8A1da219tADOfpNfbWvQIGNgGLq7bmrwHXO4AQ0+6ZEiOFKDpLxSA9zP6phwweAv0rrm9tfZx+gBkqKvUDXBwCIwVKXvd492hzt7+PdPq7wc0gHKOJDoScwAAAA9QTFRF+sw0csLobL/n+sos7RwkryR3igAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UGAwg0MfNP2KoAAAAmSURBVDjLYzCmJTAQUqIZUHGhJXBgGA2Y0YAZDZjRgBkNGPoHDADASE8Or5B2aQAAAABJRU5ErkJggg==" />
+    </header>
+    <div class="usageDiv">
+      <h3>Usage:</h3>
     <ol>
       <li>
         Enter a comma-separated, tab-separated, space-separated or
         newline-separated list of marks. For example, copy a column or a row
         from an Excel sheet and paste it in the text area.
       </li>
-      <li>For fine-grained control on the sliders, click a slider and then use keyboard arrow keys.</li>
       <li>
-        To download the plot, click on the save button on the right of the plot.
+        For fine-grained control on the sliders, click a slider and then <b>use keyboard arrow keys</b> or enter the cut off in the text box next to a grade.
       </li>
+      <li>
+        To adjust the axis limits, use the Pan tool or the Box Zoom tool from
+        the toolbar on the right top of the plot. After activating the tool,
+        click and drag on the plot area. To reset the axes, click on the Reset
+        tool.
+      </li>
+      <li>It is recommended to keep the browser window maximized.</li>
     </ol>
-    <div class="container" style="display: flex">
-      <div class="fixed" style="width: 500px">
-        <form>
-          <fieldset style="width: 450px">
-            <legend>Course Details</legend>
-            <p>
-              <label for="courseTitleInput">Course Title:</label>
+  </div>
+    <div id="output" ></div>
+    <div class="guiArea">
+      <div class="inputDiv">
+              <label for="courseTitleInput">Course Title:</label class="gradeLbl">
               <input
                 type="text"
                 id="courseTitleInput"
                 value="BITS F123 XYZ"
-                style="width: 300px"
               />
-            </p>
-            <p>
-              <label for="courseTotalInput">Course Total:</label>
+              <label for="courseTotalInput">Course Total:</label class="gradeLbl">
               <input
                 type="number"
                 id="courseTotalInput"
@@ -50,50 +187,29 @@
                 size="3"
                 value="100"
               />
-            </p>
-          </fieldset>
-        </form>
-      </div>
-      <div class="fixed" style="width: 500px">
-        <form>
-          <fieldset style="width: 450px">
-            <legend>Enter Marks</legend>
             <textarea
               id="copyPasteData"
-              rows="6"
-              style="width: 400px; resize: none"
+              rows="15"
             ></textarea>
-          </fieldset>
-        </form>
+            <input type="button" id="plotHistButton" value="Plot Histogram" />
+            <input type="button" id="savePDFButton" value="Download PDF" />
       </div>
-      <div class="fixed" style="width: 100px">
-        <input
-          type="button"
-          id="plotHist"
-          value="Plot Histogram"
-          onclick="PlotHistogram()"
-        />
-      </div>
+      <div class="bokehPlot" id="plotDiv"></div>
     </div>
-    <div id="output" style="color: red"></div>
-    <!-- Create a tabular layout for the grade labels, checkboxes, and sliders -->
+    <!-- Create a tabular layout for the grade label class="gradeLbl"s, checkboxes, and sliders -->
+      <div class="gradeControls">
     <form autocomplete="off">
-      <fieldset style="width: 1150px">
-        <legend style="margin-left: 450px">Adjust grade-cutoffs</legend>
-        <div class="divTable" style="display: table; width: auto">
-          <div
-            class="divRow"
-            style="display: table-row; width: auto; clear: both"
-          >
-            <div class="divCell" style="display: table-cell; width: 280px">
+        <div class="divTable">
+          <div class="divRow" >
+            <div class="divCell">
               <!-- For A grade -->
-              <label for="aCheck"><b>A:</b></label>
+              <label class="gradeLbl" for="aCheck"><b>A:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="aCheck"
                 name="aCheck"
                 checked="true"
-                onchange="enableDisableGrade('A')"
+                onclick="(function(){if(aCheck.checked){aSlider.disabled = false; aSpinner.disabled = false;}else{aSlider.disabled = true; aSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -103,19 +219,28 @@
                 max="maxMarks"
                 step="1"
                 value="80"
-                onchange="updateGradeCutoff('A')"
+                oninput="(function(){aSpinner.value = aSlider.value;})();"
               />
-              <label id="aSliderVal">80</label>
+              <input
+                type="number"
+                id="aSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="80"
+                oninput="(function(){aSlider.value = aSpinner.value;})();"
+              />
+              <!-- <label class="gradeLbl" id="aSliderVal">80</label class="gradeLbl"> -->
             </div>
-            <div class="divCell" style="display: table-cell; width: 280px">
+            <div class="divCell">
               <!-- For B grade -->
-              <label for="bCheck"><b>B:</b></label>
+              <label class="gradeLbl" for="bCheck"><b>B:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="bCheck"
                 name="bCheck"
                 checked="true"
-                onchange="enableDisableGrade('B')"
+                onclick="(function(){if(bCheck.checked){bSlider.disabled = false; bSpinner.disabled = false;}else{bSlider.disabled = true; bSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -125,19 +250,28 @@
                 max="maxMarks"
                 step="1"
                 value="60"
-                onchange="updateGradeCutoff('B')"
+                oninput="(function(){bSpinner.value = bSlider.value;})();"
               />
-              <label id="bSliderVal">60</label>
+              <input
+                type="number"
+                id="bSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="60"
+                oninput="(function(){bSlider.value = bSpinner.value;})();"
+              />
+              <!-- <label class="gradeLbl" id="bSliderVal">60</label class="gradeLbl"> -->
             </div>
-            <div class="divCell" style="display: table-cell; width: 280px">
+            <div class="divCell">
               <!-- For C grade -->
-              <label for="cCheck"><b>C:</b></label>
+              <label class="gradeLbl" for="cCheck"><b>C:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="cCheck"
                 name="cCheck"
                 checked="true"
-                onchange="enableDisableGrade('C')"
+                onclick="(function(){if(cCheck.checked){cSlider.disabled = false; cSpinner.disabled = false;}else{cSlider.disabled = true; cSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -147,19 +281,28 @@
                 max="maxMarks"
                 step="1"
                 value="40"
-                onchange="updateGradeCutoff('C')"
+                oninput="(function(){cSpinner.value = cSlider.value;})();"
               />
-              <label id="cSliderVal">40</label>
+              <input
+                type="number"
+                id="cSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="40"
+                oninput="(function(){cSlider.value = cSpinner.value;})();"
+              />
+              <!-- <label class="gradeLbl" id="cSliderVal">40</label class="gradeLbl"> -->
             </div>
-            <div class="divCell" style="display: table-cell; width: 280px">
+            <div class="divCell">
               <!-- For D grade -->
-              <label for="dCheck"><b>D:</b></label>
+              <label class="gradeLbl" for="dCheck"><b>D:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="dCheck"
                 name="dCheck"
                 checked="true"
-                onchange="enableDisableGrade('D')"
+                onclick="(function(){if(dCheck.checked){dSlider.disabled = false; dSpinner.disabled = false;}else{dSlider.disabled = true; dSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -169,23 +312,29 @@
                 max="maxMarks"
                 step="1"
                 value="20"
-                onchange="updateGradeCutoff('D')"
+                oninput="(function(){dSpinner.value = dSlider.value;})();"
               />
-              <label id="dSliderVal">20</label>
+              <input
+                type="number"
+                id="dSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="20"
+                oninput="(function(){dSlider.value = dSpinner.value;})();"
+              />
+              <!-- <label class="gradeLbl" id="dSliderVal">20</label class="gradeLbl"> -->
             </div>
           </div>
-          <div
-            class="divRow"
-            style="display: table-row; width: auto; clear: both"
-          >
-            <div class="divCell" style="display: table-cell; width: 280px">
+          <div class="divRow" >
+            <div class="divCell">
               <!-- For A- grade -->
-              <label for="amCheck"><b>A-:</b></label>
+              <label class="gradeLbl" for="amCheck"><b>A-:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="amCheck"
                 name="amCheck"
-                onchange="enableDisableGrade('A-')"
+                onclick="(function(){if(amCheck.checked){amSlider.disabled = false; amSpinner.disabled = false;}else{amSlider.disabled = true; amSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -195,18 +344,26 @@
                 max="maxMarks"
                 step="1"
                 value="70"
-                onchange="updateGradeCutoff('A-')"
+                oninput="(function(){amSpinner.value = amSlider.value;})();"
               />
-              <label id="amSliderVal">70</label>
+              <input
+                type="number"
+                id="amSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="70"
+                oninput="(function(){amSlider.value = amSpinner.value;})();"
+              />
             </div>
-            <div class="divCell" style="display: table-cell; width: 280px">
+            <div class="divCell">
               <!-- For B- grade -->
-              <label for="bmCheck"><b>B-:</b></label>
+              <label class="gradeLbl" for="bmCheck"><b>B-:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="bmCheck"
                 name="bmCheck"
-                onchange="enableDisableGrade('B-')"
+                onclick="(function(){if(bmCheck.checked){bmSlider.disabled = false; bmSpinner.disabled = false;}else{bmSlider.disabled = true; bmSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -216,18 +373,26 @@
                 max="maxMarks"
                 step="1"
                 value="50"
-                onchange="updateGradeCutoff('B-')"
+                oninput="(function(){bmSpinner.value = bmSlider.value;})();"
               />
-              <label id="bmSliderVal">50</label>
+              <input
+                type="number"
+                id="bmSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="50"
+                oninput="(function(){bmSlider.value = bmSpinner.value;})();"
+              />
             </div>
-            <div class="divCell" style="display: table-cell; width: 280px">
+            <div class="divCell">
               <!-- For C- grade -->
-              <label for="cmCheck"><b>C-:</b></label>
+              <label class="gradeLbl" for="cmCheck"><b>C-:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="cmCheck"
                 name="cmCheck"
-                onchange="enableDisableGrade('C-')"
+                onclick="(function(){if(cmCheck.checked){cmSlider.disabled = false; cmSpinner.disabled = false;}else{cmSlider.disabled = true; cmSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -237,18 +402,26 @@
                 max="maxMarks"
                 step="1"
                 value="30"
-                onchange="updateGradeCutoff('C-')"
+                oninput="(function(){cmSpinner.value = cmSlider.value;})();"
               />
-              <label id="cmSliderVal">30</label>
+              <input
+                type="number"
+                id="cmSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="30"
+                oninput="(function(){cmSlider.value = cmSpinner.value;})();"
+              />
             </div>
-            <div class="divCell" style="display: table-cell; width: 280px">
+            <div class="divCell">
               <!-- For E grade -->
-              <label for="eCheck"><b>E:</b></label>
+              <label class="gradeLbl" for="eCheck"><b>E:</b></label class="gradeLbl">
               <input
                 type="checkbox"
                 id="eCheck"
                 name="eCheck"
-                onchange="enableDisableGrade('E')"
+                onclick="(function(){if(eCheck.checked){eSlider.disabled = false; eSpinner.disabled = false;}else{eSlider.disabled = true; eSpinner.disabled = true;}})();"
               />
               <input
                 type="range"
@@ -258,13 +431,25 @@
                 max="maxMarks"
                 step="1"
                 value="10"
-                onchange="updateGradeCutoff('E')"
+                oninput="(function(){eSpinner.value = eSlider.value;})();"
               />
-              <label id="eSliderVal">10</label>
+              <input
+                type="number"
+                id="eSpinner"
+                min="0"
+                max="maxMarks"
+                step="1"
+                value="10"
+                oninput="(function(){eSlider.value = eSpinner.value;})();"
+              />
             </div>
           </div>
         </div>
-      </fieldset>
     </form>
+    </div>
+    <footer id="footColors">
+      <img class="colorBottom" alt="BITS colors" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAi8AAAAGBAMAAAD5xmOgAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9btUUrDnYQcchQnSyIFnHUKhShQqgVWnUwufQLmjQkKS6OgmvBwY/FqoOLs64OroIg+AHi5uak6CIl/i8ptIjx4Lgf7+497t4B/kaFqWbXBKBqlpFOJoRsblUIvqIHAYQQR5/ETH1OFFPwHF/38PH1LsazvM/9OfqVvMkAn0A8y3TDIt4gnt60dM77xBFWkhTic+Jxgy5I/Mh12eU3zkWH/TwzYmTS88QRYqHYwXIHs5KhEseJo4qqUb4/67LCeYuzWqmx1j35C8N5bWWZ6zRHkMQiliBCgIwayqjAQoxWjRQTadpPePiHHb9ILplcZTByLKAKFZLjB/+D392ahalJNymcALpfbPtjFAjuAs26bX8f23bzBAg8A1da219tADOfpNfbWvQIGNgGLq7bmrwHXO4AQ0+6ZEiOFKDpLxSA9zP6phwweAv0rrm9tfZx+gBkqKvUDXBwCIwVKXvd492hzt7+PdPq7wc0gHKOJDoScwAAAA9QTFRF+sw0csLobL/n+sos7RwkryR3igAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UGAwg0MfNP2KoAAAAmSURBVDjLYzCmJTAQUqIZUHGhJXBgGA2Y0YAZDZjRgBkNGPoHDADASE8Or5B2aQAAAABJRU5ErkJggg==" />
+      <img class="motto" alt="BITS Motto" src="data:image/png;base64,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" />
+    </footer>
   </body>
 </html>
