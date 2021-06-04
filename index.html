@@ -4,36 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Interactive Grading</title>
-    <script
-      type="text/javascript"
-      src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.2.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.bokeh.org/bokeh/release/bokeh-api-2.3.2.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
-      crossorigin="anonymous"
-    ></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-2.3.2.min.js" crossorigin="anonymous" ></script>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-api-2.3.2.min.js" crossorigin="anonymous" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" crossorigin="anonymous" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" defer="defer" src="https://cdn.jsdelivr.net/gh/amit112amit/browser-grading@2.0.0/gradinglogic.min.js" ></script>
+    <script type="text/javascript" defer="defer" src="https://cdn.jsdelivr.net/gh/amit112amit/browser-grading@2.1.0/gradinglogic.min.js" ></script>
     <style>
         .guiArea{
             width: 98%;
             margin: auto;
         }
       .inputDiv {
-        margin-top: 1.5%;
         width: 15%;
+        height: 80%;
         float: left;
-        height: 50%;
+        background-color: #90c3e5;
+        padding: 30px;
+        border-radius: 10px;
       }
       label{
         width: 100%;
         float: left;
+        font-size: 14pt;
+        padding-bottom: 5px;
+        color: #211d70;
+        font-weight: bold;
+      }
+      label[for="courseTotalInput"]{
+        padding-top: 5px;
+      }
+      #textAreaLbl {
+        padding-top: 5px;
       }
       textarea {
         resize: none;
@@ -43,12 +44,35 @@
         float: left;
         margin-bottom: 2px;
         margin-top: 6px;
+        min-height: 250px;
+        height: 90%;
       }
-      #plotHistButton, #savePDFButton {
+      .button {
         width: 100%;
-        border: 1px solid gray;
-        border-radius: 5px;
+        min-height: 30px;
         margin-top: 5px;
+        margin-top: 5px;
+        cursor: pointer;
+        color: #ffffff;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px #999;
+        font-size: 14pt;
+      }
+      .button:disabled{
+        background-color: lightgray;
+      }
+      .button:enabled{
+        background-color: #eaaf3a;
+      }
+      .button:hover:enabled {background-color: #8e6a23}
+      .button:active:enabled {
+        background-color: #8e6a23;
+        box-shadow: 0 5px #666;
+        transform: translateY(2px);
       }
       .bokehPlot {
         height: 50%;
@@ -56,29 +80,33 @@
         float: left;
         margin-top: 1%;
         margin-left: 1%;
+        margin-bottom: 1%;
         min-height: 400px;
       }
       .gradeControls {
-        margin-top: 2%;
-        margin-left: 20%;
+        margin-top: 10%;
+        margin-left: 30%;
+        padding: 10px;
       }
       label.gradeLbl{
           text-align: right;
           width: 50px;
-          font-size: 14pt;
-      }
-      input[type="checkbox"]{
-          width: 20px;
+          font-size: 16pt;
+          color: #211d70;
       }
       input[type="number"] {
         width: 50px;
+        color: #211d70;
       }
       input[type="range"]{
         width: 45%;
       }
       #courseTitleInput, #courseTotalInput{
-          width:100%;
+          width:90%;
           float: left;
+          padding: 10px;
+          font-size: 12pt;
+          color: #211d70;
       }
       .divTable{
         display: table;
@@ -92,6 +120,8 @@
       .usageDiv{
         float: left;
         width: 100%;
+        font-size: 11pt;
+        color: #211d70;
       }
       .banner{
         width: 50%;
@@ -110,9 +140,9 @@
       }
       #output{
         color: red;
-        width: 600px;
+        width: 500px;
         margin: auto;
-        font-size: 12pt;
+        font-size: 14pt;
       }
       #colorBanner{
         width: 100%;
@@ -129,9 +159,57 @@
       #footColors{
         width: 50%;
         margin: auto;
+        position: fixed;
+        bottom: 0;
+        left: 25%
       }
-      .colorBottom, .motto{
-        margin-top: 5vh;
+      table.stats{
+        width: 90%;
+        margin: auto;
+        color: #211d70;
+        border-collapse: collapse;
+      }
+      td{
+        text-align: center;
+      }
+      table, td, th{
+        border: solid 1px;
+      }
+      input[type='range'] {
+          -webkit-appearance: none !important;
+          background:gray;
+          height:3px;
+      }
+      input[type='range']:disabled {
+          -webkit-appearance: none !important;
+          background:lightgray;
+          height:3px;
+      }
+      input[type='range']::-webkit-slider-thumb {
+          -webkit-appearance: none !important;
+          background: #211d70;
+          height:15px;
+          width:15px;
+          border-radius: 5px;
+      }
+      input[type='range']:disabled::-webkit-slider-thumb {
+          -webkit-appearance: none !important;
+          background: darkgray;
+          height:15px;
+          width:15px;
+          border-radius: 5px;
+      }
+      input[type='range']::-moz-range-thumb {
+          -webkit-appearance: none !important;
+          background: #211d70;
+          height:15px;
+          width:15px;
+      }
+      input[type='range']:disabled::-moz-range-thumb {
+          -webkit-appearance: none !important;
+          background: darkgray;
+          height:15px;
+          width:15px;
       }
       @media screen and (max-width: 800px){
         .inputDiv, .gradeControls, img{
@@ -149,35 +227,48 @@
       <img class="colorTop" alt="BITS colors" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAi8AAAAGBAMAAAD5xmOgAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9btUUrDnYQcchQnSyIFnHUKhShQqgVWnUwufQLmjQkKS6OgmvBwY/FqoOLs64OroIg+AHi5uak6CIl/i8ptIjx4Lgf7+497t4B/kaFqWbXBKBqlpFOJoRsblUIvqIHAYQQR5/ETH1OFFPwHF/38PH1LsazvM/9OfqVvMkAn0A8y3TDIt4gnt60dM77xBFWkhTic+Jxgy5I/Mh12eU3zkWH/TwzYmTS88QRYqHYwXIHs5KhEseJo4qqUb4/67LCeYuzWqmx1j35C8N5bWWZ6zRHkMQiliBCgIwayqjAQoxWjRQTadpPePiHHb9ILplcZTByLKAKFZLjB/+D392ahalJNymcALpfbPtjFAjuAs26bX8f23bzBAg8A1da219tADOfpNfbWvQIGNgGLq7bmrwHXO4AQ0+6ZEiOFKDpLxSA9zP6phwweAv0rrm9tfZx+gBkqKvUDXBwCIwVKXvd492hzt7+PdPq7wc0gHKOJDoScwAAAA9QTFRF+sw0csLobL/n+sos7RwkryR3igAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UGAwg0MfNP2KoAAAAmSURBVDjLYzCmJTAQUqIZUHGhJXBgGA2Y0YAZDZjRgBkNGPoHDADASE8Or5B2aQAAAABJRU5ErkJggg==" />
     </header>
     <div class="usageDiv">
-      <h3>Usage:</h3>
-    <ol>
+    <ul>
       <li>
-        Enter a comma-separated, tab-separated, space-separated or
-        newline-separated list of marks. For example, copy a column or a row
-        from an Excel sheet and paste it in the text area.
+        Enter a comma, tab, space or newline separated list of marks. For example, copy a
+        column or a row from an Excel sheet and paste it in the text area.
       </li>
       <li>
         For fine-grained control on the sliders, click a slider and then <b>use keyboard arrow keys</b> or enter the cut off in the text box next to a grade.
       </li>
       <li>
         To adjust the axis limits, use the Pan tool or the Box Zoom tool from
-        the toolbar on the right top of the plot. After activating the tool,
+        the toolbar on the right top of the plot. After activating a tool,
         click and drag on the plot area. To reset the axes, click on the Reset
         tool.
       </li>
       <li>It is recommended to keep the browser window maximized.</li>
     </ol>
   </div>
-    <div id="output" ></div>
+    <div id="output" >
+      <table class="stats">
+          <tr>
+            <th> Students </td>
+            <th> Highest </td>
+            <th> Lowest </td>
+            <th> Average </td>
+          </tr>
+          <tr>
+            <td id="tdStudentCount"> 0 </td>
+            <td id="tdHighest"> 0 </td>
+            <td id="tdLowest"> 0 </td>
+            <td id="tdAverage"> 0 </td>
+          </tr>
+      </table>
+    </div>
     <div class="guiArea">
       <div class="inputDiv">
-              <label for="courseTitleInput">Course Title:</label class="gradeLbl">
+              <label for="courseTitleInput">Course Title:</label>
               <input
                 type="text"
                 id="courseTitleInput"
                 value="BITS F123 XYZ"
               />
-              <label for="courseTotalInput">Course Total:</label class="gradeLbl">
+              <label for="courseTotalInput">Course Total:</label>
               <input
                 type="number"
                 id="courseTotalInput"
@@ -187,12 +278,11 @@
                 size="3"
                 value="100"
               />
-            <textarea
-              id="copyPasteData"
-              rows="15"
-            ></textarea>
-            <input type="button" id="plotHistButton" value="Plot Histogram" />
-            <input type="button" id="savePDFButton" value="Download PDF" />
+              <label for="copyPasteData" id="textAreaLbl" >Enter Marks:</label>
+            <textarea id="copyPasteData" ></textarea>
+            <input type="button" class="button" id="plotHistButton" value="Plot Histogram" />
+            <input type="button" class="button" id="savePDFButton" value="Download PDF" />
+            <input type="button" class="button" id="saveGradesButton" value="Download Grades" />
       </div>
       <div class="bokehPlot" id="plotDiv"></div>
     </div>
@@ -203,7 +293,7 @@
           <div class="divRow" >
             <div class="divCell">
               <!-- For A grade -->
-              <label class="gradeLbl" for="aCheck"><b>A:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="aCheck"><b>A:</b></label>
               <input
                 type="checkbox"
                 id="aCheck"
@@ -230,11 +320,10 @@
                 value="80"
                 oninput="(function(){aSlider.value = aSpinner.value;})();"
               />
-              <!-- <label class="gradeLbl" id="aSliderVal">80</label class="gradeLbl"> -->
             </div>
             <div class="divCell">
               <!-- For B grade -->
-              <label class="gradeLbl" for="bCheck"><b>B:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="bCheck"><b>B:</b></label>
               <input
                 type="checkbox"
                 id="bCheck"
@@ -261,11 +350,10 @@
                 value="60"
                 oninput="(function(){bSlider.value = bSpinner.value;})();"
               />
-              <!-- <label class="gradeLbl" id="bSliderVal">60</label class="gradeLbl"> -->
             </div>
             <div class="divCell">
               <!-- For C grade -->
-              <label class="gradeLbl" for="cCheck"><b>C:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="cCheck"><b>C:</b></label>
               <input
                 type="checkbox"
                 id="cCheck"
@@ -292,11 +380,10 @@
                 value="40"
                 oninput="(function(){cSlider.value = cSpinner.value;})();"
               />
-              <!-- <label class="gradeLbl" id="cSliderVal">40</label class="gradeLbl"> -->
             </div>
             <div class="divCell">
               <!-- For D grade -->
-              <label class="gradeLbl" for="dCheck"><b>D:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="dCheck"><b>D:</b></label>
               <input
                 type="checkbox"
                 id="dCheck"
@@ -323,13 +410,12 @@
                 value="20"
                 oninput="(function(){dSlider.value = dSpinner.value;})();"
               />
-              <!-- <label class="gradeLbl" id="dSliderVal">20</label class="gradeLbl"> -->
             </div>
           </div>
           <div class="divRow" >
             <div class="divCell">
               <!-- For A- grade -->
-              <label class="gradeLbl" for="amCheck"><b>A-:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="amCheck"><b>A-:</b></label>
               <input
                 type="checkbox"
                 id="amCheck"
@@ -358,7 +444,7 @@
             </div>
             <div class="divCell">
               <!-- For B- grade -->
-              <label class="gradeLbl" for="bmCheck"><b>B-:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="bmCheck"><b>B-:</b></label>
               <input
                 type="checkbox"
                 id="bmCheck"
@@ -387,7 +473,7 @@
             </div>
             <div class="divCell">
               <!-- For C- grade -->
-              <label class="gradeLbl" for="cmCheck"><b>C-:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="cmCheck"><b>C-:</b></label>
               <input
                 type="checkbox"
                 id="cmCheck"
@@ -416,7 +502,7 @@
             </div>
             <div class="divCell">
               <!-- For E grade -->
-              <label class="gradeLbl" for="eCheck"><b>E:</b></label class="gradeLbl">
+              <label class="gradeLbl" for="eCheck"><b>E:</b></label>
               <input
                 type="checkbox"
                 id="eCheck"
