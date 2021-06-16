@@ -64,7 +64,7 @@
 				flex-direction: column;
 			}
 			.flexBox1 label {
-				width: 150px;
+				width: 300px;
 				text-align: left;
 				margin: 10px;
 			}
@@ -365,9 +365,8 @@ AAAAAElFTkSuQmCC"
           class="helpButton"
           title="Click here for user guide"
           type="button"
-          onclick="turnOnHelp()"
         >
-          User Guide
+					<a href="UserGuide.pdf" target="_blank">User Guide</a>
         </button>
       <img
 			  alt="ColorBand"
@@ -468,11 +467,11 @@ CTjdn3gjAAAAAElFTkSuQmCC"
       <div class="flexBox1">
         <div class="flexBox2">
           <div class="flexBox1">
-            <label for="courseTitleInput"><b>Couse Title:</b></label>
-            <input type="text" id="courseTitleInput" />
+            <label for="courseTitleInput"><b>Course Code & Name:</b></label>
+            <input type="text" id="courseTitleInput" placeholder="e.g. BITS F111 Thermodynamics"/>
           </div>
           <div class="flexBox1">
-            <label for="courseTotalInput"><b>Couse Total:</b></label>
+            <label for="courseTotalInput"><b>Maximum Marks:</b></label>
             <input
               type="number"
               id="courseTotalInput"
@@ -512,9 +511,6 @@ CTjdn3gjAAAAAElFTkSuQmCC"
       </table>
     </div>
 
-    <!-- The histogram plot -->
-    <div id="plotDiv"></div>
-
     <!-- The grade controllers -->
     <form autocomplete="off">
       <div class="gradeControls">
@@ -525,28 +521,16 @@ CTjdn3gjAAAAAElFTkSuQmCC"
           <input type="number" id="aSpinner" min="0" max="100" value="80" />
         </div>
         <div class="gradeRow">
-          <label for="bCheck"><b>B:</b></label>
-          <input type="checkbox" id="bCheck" checked="true" />
-          <input type="range" id="bSlider" min="0" max="100" value="60" />
-          <input type="number" id="bSpinner" min="0" max="100" value="60" />
-        </div>
-        <div class="gradeRow">
-          <label for="cCheck"><b>C:</b></label>
-          <input type="checkbox" id="cCheck" checked="true" />
-          <input type="range" id="cSlider" min="0" max="100" value="40" />
-          <input type="number" id="cSpinner" min="0" max="100" value="40" />
-        </div>
-        <div class="gradeRow">
-          <label for="dCheck"><b>D:</b></label>
-          <input type="checkbox" id="dCheck" checked="true" />
-          <input type="range" id="dSlider" min="0" max="100" value="20" />
-          <input type="number" id="dSpinner" min="0" max="100" value="20" />
-        </div>
-        <div class="gradeRow">
           <label for="amCheck"><b>A-:</b></label>
           <input type="checkbox" id="amCheck" checked="false" />
           <input type="range" id="amSlider" min="0" max="100" value="70" />
           <input type="number" id="amSpinner" min="0" max="100" value="70" />
+        </div>
+        <div class="gradeRow">
+          <label for="bCheck"><b>B:</b></label>
+          <input type="checkbox" id="bCheck" checked="true" />
+          <input type="range" id="bSlider" min="0" max="100" value="60" />
+          <input type="number" id="bSpinner" min="0" max="100" value="60" />
         </div>
         <div class="gradeRow">
           <label for="bmCheck"><b>B-:</b></label>
@@ -555,10 +539,22 @@ CTjdn3gjAAAAAElFTkSuQmCC"
           <input type="number" id="bmSpinner" min="0" max="100" value="50" />
         </div>
         <div class="gradeRow">
+          <label for="cCheck"><b>C:</b></label>
+          <input type="checkbox" id="cCheck" checked="true" />
+          <input type="range" id="cSlider" min="0" max="100" value="40" />
+          <input type="number" id="cSpinner" min="0" max="100" value="40" />
+        </div>
+        <div class="gradeRow">
           <label for="cmCheck"><b>C-:</b></label>
           <input type="checkbox" id="cmCheck" checked="false" />
           <input type="range" id="cmSlider" min="0" max="100" value="30" />
           <input type="number" id="cmSpinner" min="0" max="100" value="30" />
+        </div>
+        <div class="gradeRow">
+          <label for="dCheck"><b>D:</b></label>
+          <input type="checkbox" id="dCheck" checked="true" />
+          <input type="range" id="dSlider" min="0" max="100" value="20" />
+          <input type="number" id="dSpinner" min="0" max="100" value="20" />
         </div>
         <div class="gradeRow">
           <label for="eCheck"><b>E:</b></label>
@@ -568,6 +564,9 @@ CTjdn3gjAAAAAElFTkSuQmCC"
         </div>
       </div>
     </form>
+
+    <!-- The histogram plot -->
+    <div id="plotDiv"></div>
 
     <!-- The footer with the color band and the motto -->
     <footer>
@@ -667,9 +666,8 @@ CTjdn3gjAAAAAElFTkSuQmCC"
           class="helpButton"
           title="Click here for user guide"
           type="button"
-          onclick="turnOnHelp()"
         >
-          User Guide
+					<a href="UserGuide.pdf" target="_blank">User Guide</a>
         </button>
       </div>
       <img
@@ -956,93 +954,5 @@ o0nn98QS294gEUCj2vZe45R+5dsllk/H8En88cQSu177/xVADHb0cfCHAAAAAElFTkSuQmCC"
 			/>
     </footer>
 
-    <!-- The user guide overlay -->
-    <div id="overlay" onclick="turnOffHelp()">
-      <p>Click anywhere to go back.</p>
-      <ol>
-        <li>
-          For best experience, open this page on a large screen device like a
-          laptop or a tablet.
-        </li>
-				<li>
-					This website does not store any data. Grades need to be submitted
-					separately through ERP.
-				</li>
-				<li>
-					Please verify the histogram generated and the grades calculated
-					before uploading on the ERP.
-				</li>
-        <li>
-          To begin, enter a list of marks in the "Enter Marks" text area. For
-          example, you may copy and paste a column or a row from a spreadsheet
-          into the text area.
-        </li>
-        <li>
-          Click the "Plot Histogram" button. Some of the buttons and the grade
-          settings will remain disabled until a valid marks data is entered and
-          a histogram is plotted.
-        </li>
-        <li>
-					Verify the number of students, the highest, lowest and the average
-					marks displayed in the table below the "Plot Histogram" button. All
-					the scores are rounded-up before calculating the statistics.
-        </li>
-        <li>
-          Enter the course code and title. This will be used as the title of the
-          histogram plot and also for the downloaded PDF file.
-        </li>
-        <li>
-          Enter the course total. This is the maximum possible marks for the
-          course. It sets the x-axis limit of the histogram plot. On the
-          top-right of the plot, there is a toolbar with buttons to pan, zoom
-          and reset the plot view.
-        </li>
-        <li>
-          Hover over any of the bars in the histogram to see the marks and the
-          number of student who got that marks as a tooltip.
-        </li>
-        <li>
-          Enable or disable various grades using the checkboxes at the bottom of
-          the page. When a grade is unchecked, the corresponding slider and text
-          box are also disabled.
-        </li>
-        <li>
-          Adjust the cut-off for the grades using the corresponding slider. For
-          fine-grained control on the slider, click it and then
-          <b>use the keyboard arrow keys </b> to move it. It is also possible to
-          directly type the cut-off in the text box next to the slider. There
-          are up and down arrows on the text box to increment or decrement the
-          cut-off by 1.
-        </li>
-        <li>
-          The MGPA of the course is dynamically updated in the title of the plot
-          as the grade cut-offs are varied.
-        </li>
-        <li>
-          Once you are satisfied with the grade cut-offs, you can click the
-          "Save PDF" button to download a PDF file containing the histogram and
-          a summary table showing the grade boundaries and the number of
-          students in each grade.
-        </li>
-        <li>
-          You can also click "Save Grades" button to download a CSV file
-          containing the letter grades for each marks that you entered in the
-          text area in the same sequence.
-        </li>
-        <li>
-          For any bugs or usability issues please contact AUGSD.
-        </li>
-      </ol>
-    </div>
-
-    <!-- The small script for showing help -->
-    <script>
-      function turnOnHelp() {
-        document.getElementById("overlay").style.display = "block";
-      }
-      function turnOffHelp() {
-        document.getElementById("overlay").style.display = "none";
-      }
-    </script>
   </body>
 </html>
