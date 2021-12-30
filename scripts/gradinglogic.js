@@ -31,11 +31,11 @@ class Controller {
             });
             // Assign the callback for the slider
             this.sliders[i].addEventListener("input", function () {
-              _this.spinners[i].value = _this.sliders[i].value;
+                _this.spinners[i].value = _this.sliders[i].value;
             });
             // Assign the callback for the spinner
             this.spinners[i].addEventListener("input", function () {
-              _this.sliders[i].value = _this.spinners[i].value;
+                _this.sliders[i].value = _this.spinners[i].value;
             });
         }
         // Uncheck the minus grades and the E grade in the beginning
@@ -83,7 +83,7 @@ class Controller {
 
         // Check that course total is not empty or an invalid number
         var numbers = /^[0-9\.]+$/;
-        if(!this.maxScoreInput.value.match(numbers)){
+        if (!this.maxScoreInput.value.match(numbers)) {
             alert("Please enter a valid course total.");
             this.maxScoreInput.focus();
             return;
@@ -205,8 +205,11 @@ class Controller {
         // Add some text
         doc.setFontSize(14);
         doc.setTextColor("#211d70");
-        doc.text("Grades Summary Table", Math.round(0.45 * scaledImgWidth), yWrite);
-        doc.setFontSize(12);
+        let tableCaption = "Grades Summary Table (Total Students: ";
+        tableCaption += this.gradesData.numStudents;
+        tableCaption += ")";
+        doc.text(tableCaption, Math.round(0.375 * scaledImgWidth), yWrite);
+        doc.setFontSize(10);
 
         // Update the y position
         yWrite = yWrite + 5;
@@ -305,10 +308,10 @@ class GradesData {
         this.average = 0.0;
         this.highest = -1;
         this.lowest = 999;
-				//Populate the global array with rounded marks
+        //Populate the global array with rounded marks
         for (let i = 0; i < scores.length; i++) {
-						// Round up the score
-					  const score = Math.ceil(scores[i]);
+            // Round up the score
+            const score = Math.ceil(scores[i]);
             if (score > this.highest) {
                 this.highest = score;
             }
@@ -334,7 +337,11 @@ class GradesData {
                 enabled = true;
             }
             let cutOff = Math.round((highestGradeCutOff - i * 0.1) * maxScore);
-            this.gradesArray[i] = new Grade(0, cutOff, enabled, grades[i], 10 - i);
+            let weight = 10 - i;
+            if (i == 7) {
+                weight = 2;
+            }
+            this.gradesArray[i] = new Grade(0, cutOff, enabled, grades[i], weight);
         }
         // Calculate histogram data from the scores
         // Initialize frequency array with zeros.
@@ -478,8 +485,8 @@ class GradesPlot {
         plot.add_tools(new Bokeh.PanTool({ dimensions: "width" }));
         plot.add_tools(new Bokeh.ResetTool());
         plot.toolbar_location = "right";
-			  // Disable the logo
-			  plot.toolbar.logo = null
+        // Disable the logo
+        plot.toolbar.logo = null
 
         //Give a title to the plot
         this.courseTitle = title;
