@@ -131,6 +131,12 @@ footer {
   border-color: #211d70;
 }
 
+/* Last Update Date */
+#lastUpdated {
+  color: #211d70;
+  font-size: 8pt;
+}
+
 /* Responsive layout - when the screen is more than 768px wide */
 @media screen and (min-width: 768px) {
   .flexBox1,
