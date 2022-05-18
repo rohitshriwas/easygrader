@@ -428,6 +428,7 @@ class GradesData {
         // Count the number of students in each grade
         var upperLimit = this.maxScore + 1;
         var lowerLimit = 0;
+			  var totalGradedStudents = 0;
         for (let i = 0; i < this.gradesArray.length; i++) {
             const data = this.gradesArray[i];
             if (!data.enabled) {
@@ -444,9 +445,11 @@ class GradesData {
             this.mgpa = this.mgpa + count * data.weight;
             // update the upperlimit for the lower grade
             upperLimit = lowerLimit;
+					  // Update the number of students that have been assigned grades.
+					  totalGradedStudents = totalGradedStudents + count;
         }
         // Normalize the MGPA
-        this.mgpa = (this.mgpa / this.numStudents).toFixed(2);
+        this.mgpa = (this.mgpa / totalGradedStudents).toFixed(2);
     }
 }
 
