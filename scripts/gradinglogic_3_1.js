@@ -518,6 +518,10 @@ class GradesPlot {
             major_label_text_font_size: "12pt",
             major_label_text_color: "#211d70"
         });
+        // Set y-axis to show only major ticks at interval of 1
+        const yticker = new Bokeh.SingleIntervalTicker({interval: 1.0, num_minor_ticks: 0});
+        yaxis.ticker = yticker
+        // Set a preferred number of x-axis ticks
         xaxis.ticker.desired_num_ticks = 20;
         plot.add_layout(xaxis, "below");
         plot.add_layout(yaxis, "left");
