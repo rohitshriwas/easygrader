@@ -5,6 +5,10 @@ class Controller {
         this.scoresTextArea = document.getElementById("copyPasteData");
         this.maxScoreInput = document.getElementById("courseTotalInput");
         this.courseTitleInput = document.getElementById("courseTitleInput");
+        // Save old content of scoresTextArea to check for change; intialize it to empty
+        this.oldScoresText = "";
+        // Create a gradesData property for later use
+        this.gradesData = null;
         // The elements controlling the grade markers
         this.gradePrefixes = ["a", "am", "b", "bm", "c", "cm", "d", "e"];
         this.checkboxes = [];
@@ -28,14 +32,19 @@ class Controller {
                     _this.sliders[i].disabled = true;
                     _this.spinners[i].disabled = true;
                 }
+                _this.updateGradeCutOffs(i); 
             });
             // Assign the callback for the slider
             this.sliders[i].addEventListener("input", function () {
                 _this.spinners[i].value = _this.sliders[i].value;
+                _this.updateGradeCutOffs(i); 
             });
             // Assign the callback for the spinner
             this.spinners[i].addEventListener("input", function () {
                 _this.sliders[i].value = _this.spinners[i].value;
+            });
+            this.spinners[i].addEventListener("change", function () {
+                _this.updateGradeCutOffs(i); 
             });
         }
         // Uncheck the minus grades and the E grade in the beginning
@@ -61,26 +70,16 @@ class Controller {
         this.saveGradesButton.disabled = true;
         // Assign callbacks to the buttons
         this.savePDFButton.onclick = this.savePDF;
-        this.plotButton.onclick = this.plotHistogram;
         this.saveGradesButton.onclick = this.saveGrades;
+        this.plotButton.onclick = () => {
+            this.prepareGradesData();
+            this.plotHistogram();
+            this.oldScoresText = this.scoresTextArea.value;
+        };
     }
 
-    // What should happen when the user clicks plot histogram
-    plotHistogram = () => {
-        // Construct the data object
-        try {
-            this.gradesData = new GradesData(this.scoresTextArea.value, parseInt(this.maxScoreInput.value));
-        }
-        catch (error) {
-            if (error.name == "MaxScoreError") {
-                alert(`Course total (${error.maxScore}) cannot be less than the highest marks (${error.highest}).`);
-            }
-            else if (error.name == "NoMarksError") {
-                alert("Please enter valid marks data!");
-            }
-            return;
-        }
-
+    // Prepare gradesData object for the controller
+    prepareGradesData = () => {
         // Check that course total is not empty or an invalid number
         var numbers = /^[0-9\.]+$/;
         if (!this.maxScoreInput.value.match(numbers)) {
@@ -88,30 +87,33 @@ class Controller {
             this.maxScoreInput.focus();
             return;
         }
+        // Construct the data object only if it does not already exist and if any input has changed
+        if (this.gradesData === null || this.maxScoreInput.value != this.gradesData.maxScore || this.scoresTextArea.value != this.oldScoresText){
+            try {
+                this.gradesData = new GradesData(this.scoresTextArea.value, parseInt(this.maxScoreInput.value));
+            }
+            catch (error) {
+                if (error.name == "MaxScoreError") {
+                    alert(`Course total (${error.maxScore}) cannot be less than the highest marks (${error.highest}).`);
+                }
+                else if (error.name == "NoMarksError") {
+                    alert("Please enter valid marks data!");
+                }
+                return;
+            }
+        }
+    }
 
-        // Uncheck the minus grades and the E grade in the beginning
-        document.getElementById("amCheck").checked = false;
-        document.getElementById("bmCheck").checked = false;
-        document.getElementById("cmCheck").checked = false;
-        document.getElementById("eCheck").checked = false;
-        // Disable the minus grades and the E grade sliders in the beginning
-        document.getElementById("amSlider").disabled = true;
-        document.getElementById("bmSlider").disabled = true;
-        document.getElementById("cmSlider").disabled = true;
-        document.getElementById("eSlider").disabled = true;
-        // Disable the minus grades and the E grade spinners in the beginning
-        document.getElementById("amSpinner").disabled = true;
-        document.getElementById("bmSpinner").disabled = true;
-        document.getElementById("cmSpinner").disabled = true;
-        document.getElementById("eSpinner").disabled = true;
-
+    // What should happen when the user clicks plot histogram
+    plotHistogram = () => {
         // Display the statistics
         this.averageTd.innerHTML = this.gradesData.average;
         this.highestTd.innerHTML = this.gradesData.highest;
         this.lowestTd.innerHTML = this.gradesData.lowest;
         this.studentCountTd.innerHTML = this.gradesData.numStudents;
-        // Otherwise proceed to create a plot
+        // Proceed to create a plot
         this.gradesPlot = new GradesPlot(this.plotDivElement, this.gradesData, this.courseTitleInput.value);
+
         // Enable the slider controls
         for (let i = 0; i < this.checkboxes.length; i++) {
             // Enable the check box for sure
@@ -126,13 +128,6 @@ class Controller {
             this.spinners[i].max = this.gradesData.maxScore;
             this.sliders[i].value = this.gradesData.gradesArray[i].cutOff;
             this.spinners[i].value = this.gradesData.gradesArray[i].cutOff;
-        }
-        for (let i = 0; i < this.gradePrefixes.length; i++) {
-            // Add event listeners
-            var _this = this;
-            this.checkboxes[i].addEventListener("click", function () { _this.updateGradeCutOffs(i); });
-            this.sliders[i].addEventListener("input", function () { _this.updateGradeCutOffs(i) });
-            this.spinners[i].addEventListener("change", function () { _this.updateGradeCutOffs(i) });
         }
         // Enable the save PDF and save Grades buttons
         this.savePDFButton.disabled = false;
@@ -275,6 +270,8 @@ class Controller {
         hiddenElement.target = '_blank';
         hiddenElement.download = 'grades.csv';
         hiddenElement.click();
+        // remove element
+        hiddenElement.remove();
     }
 }
 
@@ -624,3 +621,68 @@ class GradesPlot {
 
 // Start the GUI!
 const controller = new Controller();
+
+// Add listener to the onchange event of the file-dialog
+const fileElem = document.getElementById("loadJSONInput");
+fileElem.addEventListener("change", function(){
+    var file = fileElem.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (event) {
+            var jsonRead = JSON.parse(event.target.result);
+            controller.courseTitleInput.value = jsonRead.courseTitle;
+            controller.maxScoreInput.value = jsonRead.maxScore;
+            controller.scoresTextArea.value = jsonRead.scoresText;
+            controller.oldScoresText = jsonRead.scoresText;
+            controller.prepareGradesData();
+            for (let i = 0; i < controller.gradePrefixes.length; i++) {
+                controller.checkboxes[i].checked = jsonRead.gradesData[i].enabled;
+                controller.checkboxes[i].disabled = jsonRead.gradesData[i].enabled;
+                // if the cut-offs are not in descending order, we will force them to be.
+                if (i > 0){
+                    if (jsonRead.gradesData[i-1].cutoff <= jsonRead.gradesData[i].cutoff){
+                        jsonRead.gradesData[i].cutoff = Math.max(jsonRead.gradesData[i-1].cutoff - 1, 0);
+                    }
+                }
+                controller.spinners[i].value = jsonRead.gradesData[i].cutoff;
+                controller.sliders[i].value = jsonRead.gradesData[i].cutoff;
+                controller.gradesData.updateCutOff(i, jsonRead.gradesData[i].enabled, jsonRead.gradesData[i].cutoff);
+            }
+            controller.plotHistogram();
+        }
+        reader.onerror = function (event) {
+            alert("Failed to read the uploaded file.");
+        }
+    }
+});
+
+// Add some hot-key to load JSON file and save JSON file
+hotkeys('alt+r,alt+w', function(event, handler){
+    event.preventDefault();
+    switch (handler.key){
+        case 'alt+r':
+            const fileElem = document.getElementById("loadJSONInput");
+            fileElem.click();
+            break;
+        case 'alt+w':
+            var gradesData = [];
+            for (let i = 0; i < controller.gradePrefixes.length; i++) {
+                gradesData[i] = {"enabled": controller.checkboxes[i].checked, "cutoff": controller.spinners[i].value};
+            }
+            var fieldValues = {
+                "courseTitle": controller.courseTitleInput.value,
+                "maxScore": controller.maxScoreInput.value,
+                "scoresText": controller.scoresTextArea.value,
+                "gradesData": gradesData
+            };
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/json;charset=utf-8,' + encodeURI(JSON.stringify(fieldValues));
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'prefill.json';
+            hiddenElement.click();
+            // remove element
+            hiddenElement.remove();
+            break;
+    }
+});
