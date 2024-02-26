@@ -265,6 +265,21 @@ class Controller {
             }
         }
         console.log(csv);
+
+        fetch(location.href, {
+            method: "POST",
+            body: csv,
+        }).then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                alert(`${response.status}: ${response.statusText}`);
+            }
+        }).then(data => {
+            location.href = data;
+        });
+
+        /* -- this part disabled by Code Argo --
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
         hiddenElement.target = '_blank';
@@ -272,6 +287,7 @@ class Controller {
         hiddenElement.click();
         // remove element
         hiddenElement.remove();
+        */
     }
 }
 
