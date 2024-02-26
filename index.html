@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,20 +8,20 @@
     <title>Interactive Grading</title>
 
     <!-- The scripts -->
-    <script type="text/javascript" src="scripts/bokeh-2_3_2.js"></script>
-    <script type="text/javascript" src="scripts/bokeh-api-2_3_2.js"></script>
-    <script type="text/javascript" src="scripts/jspdf_1_5_3.js"></script>
-    <script type="text/javascript" src="scripts/hotkeys_3_13_5.js"></script>
-    <script type="text/javascript" src="scripts/jspdf-autotable_3_5_6.js" ></script>
-    <script type="text/javascript" src="scripts/gradinglogic_4.js" defer="defer" ></script>
+    <script type="text/javascript" src="{% static 'easygrader/scripts/bokeh-2_3_2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'easygrader/scripts/bokeh-api-2_3_2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'easygrader/scripts/jspdf_1_5_3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'easygrader/scripts/hotkeys_3_13_5.js' %}"></script>
+    <script type="text/javascript" src="{% static 'easygrader/scripts/jspdf-autotable_3_5_6.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'easygrader/scripts/gradinglogic_4.js' %}" defer="defer" ></script>
 
     <!-- The style sheet -->
-    <link rel="stylesheet" href="resources/gradingapp_2.css" />
+    <link rel="stylesheet" href="{% static 'easygrader/resources/gradingapp_2.css' %}" />
   </head>
   <body>
     <!-- The header with logo -->
     <header>
-      <img alt="BITS Logo" src="resources/AUGSD.jpg" width="401" height="104" />
+      <img alt="BITS Logo" src="{% static 'easygrader/resources/AUGSD.jpg' %}" width="401" height="104" />
       <h1>Interactive Grading</h1>
       <div class="flexBox2">
         <button
@@ -27,11 +29,11 @@
           title="Click here for user guide"
           type="button"
         >
-          <a href="resources/UserGuide.pdf" target="_blank">User Guide</a>
+          <a href="{% static 'easygrader/resources/UserGuide.pdf' %}" target="_blank">User Guide</a>
         </button>
         <img
           alt="ColorBand"
-          src="resources/ColorBand.png"
+          src="{% static 'easygrader/resources/ColorBand.png' %}"
           width="559"
           height="6"
         />
@@ -48,6 +50,8 @@
               type="text"
               id="courseTitleInput"
               placeholder="e.g. BITS F111 Thermodynamics"
+              value="{{ course_title }}"
+              readonly
             />
           </div>
           <div class="flexBox1">
@@ -63,7 +67,8 @@
         </div>
         <div class="flexBox1">
           <label for="copyPasteData"><b>Enter Marks:</b></label>
-          <textarea id="copyPasteData"></textarea>
+          <textarea id="copyPasteData" readonly>{% for i in semester_marks %}
+{{ i }}{% endfor %}</textarea>
         </div>
       </div>
       <div class="flexBox1">
@@ -153,7 +158,7 @@
       <div class="flexBox2">
         <img
           alt="ColorBand"
-          src="resources/ColorBand.png"
+          src="{% static 'easygrader/resources/ColorBand.png' %}"
           width="559"
           height="6"
         />
@@ -162,12 +167,12 @@
           title="Click here for user guide"
           type="button"
         >
-          <a href="resources/UserGuide.pdf" target="_blank">User Guide</a>
+          <a href="{% static 'easygrader/resources/UserGuide.pdf' %}" target="_blank">User Guide</a>
         </button>
         <span id="lastUpdated"><b>Last updated on January 17, 2024</b></span>
         <input type="file" id="loadJSONInput" style="display:none" />
       </div>
-      <img alt="Motto" src="resources/Motto.png" width="274" height="89" />
+      <img alt="Motto" src="{% static 'easygrader/resources/Motto.png' %}" width="274" height="89" />
     </footer>
   </body>
 </html>
