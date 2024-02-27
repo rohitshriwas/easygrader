@@ -74,7 +74,13 @@
       <div class="flexBox1">
         <button type="button" id="plotHistButton">Plot Histogram</button>
         <button style="display: none;" type="button" id="savePDFButton">Save PDF</button>
-        <button type="button" id="saveGradesButton">Save Grades</button>
+        <button type="button" id="saveGradesButton">
+          {% if grading_finalised %}
+          View Saved Grades
+          {% else %}
+          Save Grades
+          {% endif %}
+        </button>
       </div>
     </div>
 
