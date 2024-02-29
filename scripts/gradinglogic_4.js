@@ -266,9 +266,15 @@ class Controller {
         }
         console.log(csv);
 
+        let payload = JSON.stringify({
+            'csv': csv,
+            'mgpa': this.gradesData.mgpa,
+            'average': this.gradesData.average,
+            'total_students': this.gradesData.numStudents,
+        });
         fetch(location.href, {
             method: "POST",
-            body: csv,
+            body: payload,
         }).then(response => {
             if (response.ok) {
                 return response.text();
