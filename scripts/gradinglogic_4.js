@@ -266,6 +266,11 @@ class Controller {
         }
         console.log(csv);
 
+        if (csv.includes('NOT_FOUND')) {
+            alert('Caution: There are still students below the lower cutoff limit. Please review before proceeding.');
+            return;
+        }
+
         let payload = JSON.stringify({
             'csv': csv,
             'mgpa': this.gradesData.mgpa,
