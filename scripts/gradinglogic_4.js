@@ -271,11 +271,14 @@ class Controller {
             return;
         }
 
+        let cut_offs = JSON.stringify(gradesArray.filter((e) => e.enabled));
+
         let payload = JSON.stringify({
             'csv': csv,
             'mgpa': this.gradesData.mgpa,
             'average': this.gradesData.average,
             'total_students': this.gradesData.numStudents,
+            'cut_offs': cut_offs,
         });
         fetch(location.href, {
             method: "POST",
