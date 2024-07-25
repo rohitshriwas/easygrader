@@ -396,6 +396,15 @@ class GradesData {
             right: rightEdges,
             binValue: binValues
         };
+
+        // Read semester_marks_by_course supplied by elearn
+        this.semesterMarksByCourse = [];
+        try {
+            this.semesterMarksByCourse = JSON.parse(document.querySelector("input[name=semester_marks_by_course]").value);
+        } catch(e) {
+            console.log("Error: Unable to parse: semester_marks_by_course");
+        }
+
         // Now that initial cut-offs and the histogram bins are ready
         this.updateMGPA();
     }
@@ -452,6 +461,48 @@ class GradesData {
     updateMGPA() {
         // Reset MGPA
         this.mgpa = 0.0;
+
+        let cutOffs = this.gradesArray.filter((e) => e.enabled);
+
+        let WeightsNCountsbyCourse = {};
+        this.semesterMarksByCourse.forEach((element) => {
+            let [courseName, totalMarks] = element;
+            WeightsNCountsbyCourse[courseName] = WeightsNCountsbyCourse[courseName] || {};
+
+            for (const cutOff of cutOffs) {
+                if (totalMarks >= cutOff.cutOff) {
+                    WeightsNCountsbyCourse[courseName][cutOff.weight] = WeightsNCountsbyCourse[courseName][cutOff.weight] || 0;
+                    WeightsNCountsbyCourse[courseName][cutOff.weight]++
+                    break;
+                }
+            }
+        });
+
+        let CourseMGPA = {};
+        for (const [course, counts] of Object.entries(WeightsNCountsbyCourse)) {
+            CourseMGPA[course] = 0.0;
+            let total = 0;
+            for (const [weight, count] of Object.entries(counts)) {
+                CourseMGPA[course] = CourseMGPA[course] + weight * count;
+                total = total + count;
+            }
+            CourseMGPA[course] = (CourseMGPA[course] / total).toFixed(2);
+        }
+
+        let highestMGPA = {
+            name: "",
+            value: -Infinity,
+        };
+        for (const [course, mgpa] of Object.entries(CourseMGPA)) {
+            if (mgpa > highestMGPA.value) {
+                highestMGPA.name = course;
+                highestMGPA.value = mgpa;
+            }
+        }
+
+        this.mgpa = highestMGPA.value;
+
+        /* -- this part disabled by Code Argo --
         // Count the number of students in each grade
         var upperLimit = this.maxScore + 1;
         var lowerLimit = 0;
@@ -477,6 +528,7 @@ class GradesData {
         }
         // Normalize the MGPA
         this.mgpa = (this.mgpa / totalGradedStudents).toFixed(2);
+        */
     }
 }
 
