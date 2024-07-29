@@ -501,6 +501,7 @@ class GradesData {
         }
 
         this.mgpa = highestMGPA.value;
+        this.highestMGPACourseCode = "["+highestMGPA.name+"]";
 
         /* -- this part disabled by Code Argo --
         // Count the number of students in each grade
@@ -696,7 +697,7 @@ class GradesPlot {
             this.labels[i].text = `${gradesArray[i].label}: ${gradesArray[i].count}`;
         }
         // Update the MGPA
-        this.plotTitle.text = `${this.courseTitle} MGPA: ${gradesData.mgpa}`;
+        this.plotTitle.text = `${this.courseTitle} MGPA: ${gradesData.mgpa} ${gradesData.highestMGPACourseCode}`;
         this.plotTitle.align = "center";
     }
 }
