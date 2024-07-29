@@ -500,9 +500,6 @@ class GradesData {
             }
         }
 
-        this.mgpa = highestMGPA.value;
-        this.highestMGPACourseCode = "["+highestMGPA.name+"]";
-
         // Count the number of students in each grade
         var upperLimit = this.maxScore + 1;
         var lowerLimit = 0;
@@ -528,6 +525,9 @@ class GradesData {
         }
         // Normalize the MGPA
         // this.mgpa = (this.mgpa / totalGradedStudents).toFixed(2); // -- this part disabled by Code Argo --
+
+        this.mgpa = highestMGPA.value;
+        this.highestMGPACourseCode = "["+highestMGPA.name+"]";
     }
 }
 
