@@ -572,7 +572,7 @@ class GradesPlot {
         //Give a title to the plot
         this.courseTitle = title;
         this.plotTitle = new Bokeh.Title({
-            text: `${title} MGPA: ${gradesData.mgpa}`,
+            text: `${title} MGPA: ${gradesData.mgpa} ${gradesData.highestMGPACourseCode}`,
             align: "center",
             text_font_size: "20pt",
             text_color: "#211d70"
