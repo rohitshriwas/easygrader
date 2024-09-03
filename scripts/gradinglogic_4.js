@@ -279,6 +279,7 @@ class Controller {
             'average': this.gradesData.average,
             'total_students': this.gradesData.numStudents,
             'cut_offs': cut_offs,
+            'max_score': this.gradesData.maxScore,
         });
         fetch(location.href, {
             method: "POST",
