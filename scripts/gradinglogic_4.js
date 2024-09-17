@@ -68,9 +68,12 @@ class Controller {
         // The download grades button
         this.saveGradesButton = document.getElementById("saveGradesButton");
         this.saveGradesButton.disabled = true;
+        this.saveNSubmitGradesButton = document.getElementById("saveNSubmitGradesButton");
+        this.saveNSubmitGradesButton.disabled = true;
         // Assign callbacks to the buttons
         this.savePDFButton.onclick = this.savePDF;
         this.saveGradesButton.onclick = this.saveGrades;
+        this.saveNSubmitGradesButton.onclick = this.saveNSubmitGrades;
         this.plotButton.onclick = () => {
             this.prepareGradesData();
             this.plotHistogram();
@@ -132,6 +135,7 @@ class Controller {
         // Enable the save PDF and save Grades buttons
         this.savePDFButton.disabled = false;
         this.saveGradesButton.disabled = false;
+        this.saveNSubmitGradesButton.disabled = false;
     }
 
     // Call-back function for change in slider/spinner/checkbox value 
@@ -280,6 +284,7 @@ class Controller {
             'total_students': this.gradesData.numStudents,
             'cut_offs': cut_offs,
             'max_score': this.gradesData.maxScore,
+            'save_n_submit': document.querySelector('input[name="save_n_submit"]').value,
         });
         fetch(location.href, {
             method: "POST",
@@ -303,6 +308,11 @@ class Controller {
         // remove element
         hiddenElement.remove();
         */
+    }
+
+    saveNSubmitGrades = () => {
+        document.querySelector('input[name="save_n_submit"]').value = 'yes';
+        this.saveGrades();
     }
 }
 
