@@ -283,6 +283,7 @@ class Controller {
             'average': this.gradesData.average,
             'total_students': this.gradesData.numStudents,
             'cut_offs': cut_offs,
+            'course_mgpa': this.gradesData.CourseMGPA,
             'max_score': this.gradesData.maxScore,
             'save_n_submit': document.querySelector('input[name="save_n_submit"]').value,
         });
@@ -489,22 +490,22 @@ class GradesData {
             }
         });
 
-        let CourseMGPA = {};
+        this.CourseMGPA = {};
         for (const [course, counts] of Object.entries(WeightsNCountsbyCourse)) {
-            CourseMGPA[course] = 0.0;
+            this.CourseMGPA[course] = 0.0;
             let total = 0;
             for (const [weight, count] of Object.entries(counts)) {
-                CourseMGPA[course] = CourseMGPA[course] + weight * count;
+                this.CourseMGPA[course] = this.CourseMGPA[course] + weight * count;
                 total = total + count;
             }
-            CourseMGPA[course] = (CourseMGPA[course] / total).toFixed(2);
+            this.CourseMGPA[course] = (this.CourseMGPA[course] / total).toFixed(2);
         }
 
         let highestMGPA = {
             name: "",
             value: -Infinity,
         };
-        for (const [course, mgpa] of Object.entries(CourseMGPA)) {
+        for (const [course, mgpa] of Object.entries(this.CourseMGPA)) {
             if (mgpa > highestMGPA.value) {
                 highestMGPA.name = course;
                 highestMGPA.value = mgpa;
