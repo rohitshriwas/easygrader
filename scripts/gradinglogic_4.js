@@ -287,8 +287,10 @@ class Controller {
             'max_score': this.gradesData.maxScore,
             'save_n_submit': document.querySelector('input[name="save_n_submit"]').value,
         });
+        let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         fetch(location.href, {
             method: "POST",
+            headers: {'X-CSRFToken': csrftoken},
             body: payload,
         }).then(response => {
             if (response.ok) {

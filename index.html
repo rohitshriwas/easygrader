@@ -71,6 +71,7 @@
 {{ i }}{% endfor %}</textarea>
           <input type="hidden" name="semester_marks_by_course" value="{{ semester_marks_by_course }}">
           <input type="hidden" name="save_n_submit" value="no">
+          {% csrf_token %}
         </div>
       </div>
       <div class="flexBox1">
