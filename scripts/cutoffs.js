@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   var cutOffs = JSON.parse(document.querySelector("[name='cut_offs']").value);
 
-  var scores = document.getElementById("copyPasteData");
-  if (scores.value !== "") {
+  if (cutOffs.length > 0) {
     document.getElementById("plotHistButton").click();
 
     cutOffs.forEach((element) => {

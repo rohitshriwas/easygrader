@@ -48,21 +48,14 @@ class Controller {
             });
         }
         // Uncheck the minus grades and the E grade in the beginning
-        if (this.scoresTextArea.value === "") {
-            document.getElementById("aCheck").checked = false;
-            document.getElementById("amCheck").checked = false;
-            document.getElementById("bCheck").checked = false;
-            document.getElementById("bmCheck").checked = false;
-            document.getElementById("cCheck").checked = false;
-            document.getElementById("cmCheck").checked = false;
-            document.getElementById("dCheck").checked = false;
-            document.getElementById("eCheck").checked = false;
-        } else {
-            document.getElementById("amCheck").checked = false;
-            document.getElementById("bmCheck").checked = false;
-            document.getElementById("cmCheck").checked = false;
-            document.getElementById("eCheck").checked = false;
-        }
+        document.getElementById("aCheck").checked = false;
+        document.getElementById("amCheck").checked = false;
+        document.getElementById("bCheck").checked = false;
+        document.getElementById("bmCheck").checked = false;
+        document.getElementById("cCheck").checked = false;
+        document.getElementById("cmCheck").checked = false;
+        document.getElementById("dCheck").checked = false;
+        document.getElementById("eCheck").checked = false;
 
         // The output area for showing statistics
         this.averageTd = document.getElementById("tdAverage");
