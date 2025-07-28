@@ -597,7 +597,7 @@ class GradesPlot {
         //Give a title to the plot
         this.courseTitle = title;
         this.plotTitle = new Bokeh.Title({
-            text: `${title} MGPA: ${gradesData.mgpa} ${gradesData.highestMGPACourseCode}`,
+            text: `${title} MGPV: ${gradesData.mgpa} ${gradesData.highestMGPACourseCode}`,
             align: "center",
             text_font_size: "20pt",
             text_color: "#211d70"
@@ -720,7 +720,7 @@ class GradesPlot {
             this.labels[i].text = `${gradesArray[i].label}: ${gradesArray[i].count}`;
         }
         // Update the MGPA
-        this.plotTitle.text = `${this.courseTitle} MGPA: ${gradesData.mgpa} ${gradesData.highestMGPACourseCode}`;
+        this.plotTitle.text = `${this.courseTitle} MGPV: ${gradesData.mgpa} ${gradesData.highestMGPACourseCode}`;
         this.plotTitle.align = "center";
     }
 }
