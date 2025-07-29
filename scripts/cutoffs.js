@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
       var grade = "";
 
       if (element["label"].slice(-1) === "-") {
-        grade = element["label"].slice(0).toLowerCase() + "m";
+        grade = element["label"].slice(0, 1).toLowerCase() + "m";
       } else {
         grade = element["label"].toLowerCase();
       }
