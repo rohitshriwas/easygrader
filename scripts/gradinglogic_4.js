@@ -378,9 +378,9 @@ class GradesData {
         this.gradesArray = [];
         for (let i = 0; i < grades.length; i++) {
             let enabled = false;
-            if (i % 2 == 0) {
-                enabled = true;
-            }
+            // if (i % 2 == 0) {
+            //     enabled = true;
+            // }
             let cutOff = Math.round((highestGradeCutOff - i * 0.1) * maxScore);
             let weight = 10 - i;
             if (i == 7) {
