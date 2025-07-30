@@ -373,15 +373,12 @@ class GradesData {
         // The set of grades
         const grades = ["A", "A-", "B", "B-", "C", "C-", "D", "E"];
         // The initial cut-off for the "A" grade
-        const highestGradeCutOff = 0.8;
+        const highestGradeCutOff = 0.0;
         // Create all grade items
         this.gradesArray = [];
         for (let i = 0; i < grades.length; i++) {
             let enabled = false;
-            // if (i % 2 == 0) {
-            //     enabled = true;
-            // }
-            let cutOff = Math.round((highestGradeCutOff - i * 0.1) * maxScore);
+            let cutOff = highestGradeCutOff
             let weight = 10 - i;
             if (i == 7) {
                 weight = 2;
