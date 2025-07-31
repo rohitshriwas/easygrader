@@ -92,7 +92,7 @@ class Controller {
         // Check that course total is not empty or an invalid number
         var numbers = /^[0-9\.]+$/;
         if (!this.maxScoreInput.value.match(numbers)) {
-            alert("Please enter a valid course total.");
+            alert("Please enter the maximum marks for the course");
             this.maxScoreInput.focus();
             return;
         }
