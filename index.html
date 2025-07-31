@@ -93,6 +93,13 @@
           type="button" id="saveNSubmitGradesButton">
           Save and Submit Grades
         </button>
+        <button
+          {% if grading_state != 'A' %}
+          style="display: none;"
+          {% endif %}
+          type="button" id="resetCutoffsButton">
+          Reset Cutoffs
+        </button>
       </div>
     </div>
 

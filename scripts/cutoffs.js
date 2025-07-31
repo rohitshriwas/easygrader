@@ -34,4 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     document.getElementById("courseTotalInput").value = "";
   }
+
+  document
+    .getElementById("resetCutoffsButton")
+    .addEventListener("click", () => {
+      document.querySelectorAll('[id*="Check"]').forEach((element) => {
+        var grade = "";
+
+        if (element.id.slice(1) === "m") {
+          grade = element.id.slice(0, 2);
+        } else {
+          grade = element.id.slice(0, 1);
+        }
+
+        if (element.checked) {
+          element.click();
+        }
+        document.getElementById(`${grade}Spinner`).value = `0`;
+        document
+          .getElementById(`${grade}Spinner`)
+          .dispatchEvent(new Event("input", { bubbles: true }));
+        document
+          .getElementById(`${grade}Spinner`)
+          .dispatchEvent(new Event("change", { bubbles: true }));
+      });
+    });
 });

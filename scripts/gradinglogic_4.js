@@ -74,6 +74,8 @@ class Controller {
         this.saveGradesButton.disabled = true;
         this.saveNSubmitGradesButton = document.getElementById("saveNSubmitGradesButton");
         this.saveNSubmitGradesButton.disabled = true;
+        this.resetCutoffsButton = document.getElementById("resetCutoffsButton");
+        this.resetCutoffsButton.disabled = true;
         // Assign callbacks to the buttons
         this.savePDFButton.onclick = this.savePDF;
         this.saveGradesButton.onclick = this.saveGrades;
@@ -140,6 +142,7 @@ class Controller {
         this.savePDFButton.disabled = false;
         this.saveGradesButton.disabled = false;
         this.saveNSubmitGradesButton.disabled = false;
+        this.resetCutoffsButton.disabled = false;
     }
 
     // Call-back function for change in slider/spinner/checkbox value 
